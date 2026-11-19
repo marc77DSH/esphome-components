@@ -100,7 +100,16 @@ bool Packet::calculate_payload_size() {
   return total_length;
 }
 
-std::optional<Frame> Packet::convert_to_frame() {
+std::string Frame::as_hex() {
+  static const char hex[] = "0123456789abcdef";
+  std::string out;
+  out.reserve(this->data_.size() * 2);
+  for (uint8_t b : this->data_) {
+    out.push_back(hex[b >> 4]);
+    out.push_back(hex[b & 0x0f]);
+  }
+  return out;
+}
   std::optional<Frame> frame = {};
 
   ESP_LOGD(TAG, "Have data from radio (%zu bytes)", this->data_.size());
